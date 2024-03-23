@@ -129,11 +129,3 @@ class Simulation:
 
 
 ##############################################################################
-
-s = Simulation()
-s.SetSimulationRuntime(3600, 's')
-s.SetNumberOfEntities(1)
-s.InitializeFactory()
-s.InitializeEntities()
-
-s.Run()
