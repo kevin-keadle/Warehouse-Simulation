@@ -4,8 +4,8 @@ Created on Fri Mar  1 00:02:39 2024
 
 @author: Kevin
 """
-import robot
-import factory
+from agent import robot
+from factory import factory
 import numpy as np
 import matplotlib.pyplot as plt
 
