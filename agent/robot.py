@@ -14,6 +14,7 @@ class robot:
         self.y = 0
         self.dest_x = 0
         self.dest_y = 0
+        self.IsAtPickupLocation = False
         self.step = 0
         self.vertices = []
         
@@ -24,6 +25,43 @@ class robot:
     def UpdateDestinationPosition(self, x, y):
         self.dest_x = x
         self.dest_y = y
+    
+    def GetNextDestination(self, PickLocations, DropLocations):
+        '''
+        This function will determine if the robot is at a drop location or a
+        pick location. Based on the current location, it will load a new
+        destination into the robots properties and compute the move path.
+
+        Parameters
+        ----------
+        PickLocations : dict(int, float)
+            Dictionary of the pick locations.
+        DropLocations : dict(str, float)
+            Dictionary of the drop locations.
+
+        Returns
+        -------
+        None.
+
+        '''
+        x = 0.0
+        y = 0.0
+        
+        self.WhereIsAgent(PickLocations, DropLocations)
+        
+        if self.IsAtPickupLocation == True:
+            x, y = DropLocations[str(np.random.randint(0, len(DropLocations)))]
+        else:
+            x, y = PickLocations[np.random.randint(0,len(PickLocations))]
+
+        self.UpdateDestinationPosition(int(x), int(y))
+        self.ComputeMovePath()
+        
+    
+    def WhereIsAgent(self, PickLocations, DropLocations):
+        
+        self.IsAtPickupLocation = abs(self.y - PickLocations[0][1]) < 1
+        
     
     def ManhattanDistance(self):
         '''

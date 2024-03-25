@@ -89,7 +89,7 @@ class Simulation:
         
         # Run indefinitely
         count = 0
-        packagesPicked = 0
+        # packagesPicked = 0
         endSimulation = False
         while not endSimulation:
             if count%100 == 0:
@@ -98,21 +98,11 @@ class Simulation:
                 
             # At each time step, loop through every entity
             for entity in self.Entities:
-                # If we are at the destination, drop the package and return
+                # If we are at the destination, pick new location and go
                 if entity.IsAtDestination():
-                    packagesPicked += 1
+                    entity.GetNextDestination(self.Factory.PickLocations,
+                                              self.Factory.DropLocations)
                     
-                    x, y = self.Factory.PickLocations[np.random.randint(0,4)]
-                    entity.UpdateDestinationPosition(int(x), int(y))
-                    entity.ComputeMovePath()
-                    
-                    print('Robot', entity.x, entity.y)
-                    print('desty', entity.dest_x, entity.dest_y)
-                    
-                    if packagesPicked > 2:
-                        endSimulation = True
-                        print('Simulation ended')
-                        return
                     continue
                 
                 # Increment the robot in space
@@ -126,6 +116,10 @@ class Simulation:
             # Redraw the figure once per loop
             fig.canvas.draw()
             fig.canvas.flush_events()
+            
+            # Determine if the simulation should end
+            if count > self.Duration:
+                endSimulation = True
 
 
 ##############################################################################
