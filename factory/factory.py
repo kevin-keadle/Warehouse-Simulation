@@ -113,8 +113,7 @@ class factory:
     
     def PickUpPackage(self):
         zip = np.random.randint(1, 99999)
-        
-        
+
         return True
     
     
@@ -144,15 +143,4 @@ class factory:
             return '00000'
         
         return '{:0>5}'.format(zip)
-    
-    
-# f = factory()
-
-# import matplotlib.pyplot as plt
-# fig, ax = plt.subplots()
-# scatter = ax.scatter(0, 0)
-# plt.show(block=False)
-
-# f.PlotPickLocations(ax)
-# f.PlotDropLocations(ax)
 
