@@ -86,10 +86,12 @@ class Simulation:
         ax.set_xlim(0, self.Factory.factory_x)
         ax.set_ylim(0, self.Factory.factory_y)
         ax.set_aspect('equal')
+
+        # This is used for plotting
+        arr = [[0,0]]*self.NumberOfEntities
         
         # Run indefinitely
         count = 0
-        # packagesPicked = 0
         endSimulation = False
         while not endSimulation:
             if count%100 == 0:
@@ -97,12 +99,11 @@ class Simulation:
             count += 1
                 
             # At each time step, loop through every entity
-            for entity in self.Entities:
+            for i, entity in enumerate(self.Entities):
                 # If we are at the destination, pick new location and go
                 if entity.IsAtDestination():
                     entity.GetNextDestination(self.Factory.PickLocations,
                                               self.Factory.DropLocations)
-                    
                     continue
                 
                 # Increment the robot in space
@@ -110,8 +111,10 @@ class Simulation:
                 
                 # This needs to be outside of the for-loop
                 # We need to update all entity positions, then zip, then plot
-                scatter.set_offsets(np.c_[entity.x, entity.y])
+                arr[i] = [entity.x, entity.y]
                 
+            # scatter.set_offsets(np.c_[np.array([entity.x, entity.y])])
+            scatter.set_offsets(np.c_[arr])
             
             # Redraw the figure once per loop
             fig.canvas.draw()
