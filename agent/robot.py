@@ -47,8 +47,10 @@ class robot:
         x = 0.0
         y = 0.0
         
-        self.WhereIsAgent(PickLocations, DropLocations)
+        # Determines if we are at a pick or drop location
+        self.WhereIsAgent(PickLocations)
         
+        # If at pick location, go to drop location and vice versa
         if self.IsAtPickupLocation == True:
             x, y = DropLocations[str(np.random.randint(0, len(DropLocations)))]
         else:
@@ -58,9 +60,27 @@ class robot:
         self.ComputeMovePath()
         
     
-    def WhereIsAgent(self, PickLocations, DropLocations):
+    def WhereIsAgent(self, PickLocations):
+        '''
+        This function determines if the entity is currently at a pickup 
+        location. The IsAtPickupLocation variable on the entity is set based
+        on this determination.
+
+        Parameters
+        ----------
+        PickLocations : dict(int, float)
+            Dictionary of the pickup locations in the factory.
+
+        Returns
+        -------
+        None.
+
+        '''
         
-        self.IsAtPickupLocation = abs(self.y - PickLocations[0][1]) < 1
+        for x in PickLocations:
+            if abs(self.x - PickLocations[x][0]) < 1 and abs(self.y - PickLocations[x][1]) < 1:
+                self.IsAtPickupLocation = True
+                return
         
     
     def ManhattanDistance(self):
@@ -140,7 +160,7 @@ class robot:
         # This is the initial point
         self.vertices.append([self.x, self.y])
         
-        m, b = robot.ComputeStraightLine(self)
+        m, b = self.ComputeStraightLine()
         
         # The real straight line between the points
         xsteps = np.abs(self.dest_x - self.x)
@@ -149,7 +169,7 @@ class robot:
         
         # This solution continually moves along the closest line to straight
         #  while still transiting toward the destination
-        mdist = robot.ManhattanDistance(self)
+        mdist = self.ManhattanDistance()
         while mdist > 0:
             # Compute the y location we should be at
             y = m * self.x + b
@@ -164,19 +184,39 @@ class robot:
             self.vertices.append([self.x, self.y])
             
             # Compute our new distance to destination
-            mdist = robot.ManhattanDistance(self)
+            mdist = self.ManhattanDistance()
             
         # Need to reset the x,y of the robot once the position has updated
         self.x, self.y = self.vertices[0][:]
         return self.vertices, xreal, yreal
     
     def Step(self):
+        '''
+        This function iterates the current entity forward one unit step.
+
+        Returns
+        -------
+        None.
+
+        '''
+        
         self.x = self.vertices[self.step][0]
         self.y = self.vertices[self.step][1]
         self.step += 1 - int(self.IsAtDestination())
-        # return 1
+
     
     def IsAtDestination(self):
+        '''
+        This function determines if the current entity is at its destination
+        location. Both the x and y coordinates of the entity and the 
+        destination must be coincident.
+
+        Returns
+        -------
+        bool
+            TRUE if the entity and destination are coincident.
+
+        '''
         if abs(self.x - self.dest_x) == 0 and abs(self.y - self.dest_y) == 0:
             return True
         return False

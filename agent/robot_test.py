@@ -8,7 +8,7 @@ import unittest
 import robot
 import numpy as np
 
-class TestMdistMethods(unittest.TestCase):
+class TestRobotMethods(unittest.TestCase):
     
     def test_UpdateRobotPosition(self):
         # this method should have no processing of the position
@@ -37,6 +37,41 @@ class TestMdistMethods(unittest.TestCase):
         r.UpdateDestinationPosition(-4, -6)
         self.assertEqual(r.dest_x, -4)
         self.assertEqual(r.dest_y, -6)
+        
+    def test_WhereIsAgent(self):
+        r = robot.robot()
+        PickLocations = {}
+        PickLocations[0] = [100,50]
+        PickLocations[1] = [150,75]
+        
+        # neither x nor y are coincident
+        r.x = 0
+        r.y = 0
+        r.WhereIsAgent(PickLocations)
+        self.assertFalse(r.IsAtPickupLocation)
+        
+        # only x is coincident
+        r.x = 150
+        r.WhereIsAgent(PickLocations)
+        self.assertFalse(r.IsAtPickupLocation)
+        
+        # only y is coincident
+        r.x = 0
+        r.y = 50
+        r.WhereIsAgent(PickLocations)
+        self.assertFalse(r.IsAtPickupLocation)
+        
+        # x and y are coincident, but with different locations
+        r.x = 100
+        r.y = 75
+        r.WhereIsAgent(PickLocations)
+        self.assertFalse(r.IsAtPickupLocation)
+        
+        # both x and y are coincident
+        r.x = 100
+        r.y = 50
+        r.WhereIsAgent(PickLocations)
+        self.assertTrue(r.IsAtPickupLocation)
     
     def test_ManhattanDistance(self):
         # should have zero distance when no start/end are initialized
